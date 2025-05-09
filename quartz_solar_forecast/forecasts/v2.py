@@ -57,7 +57,7 @@ class TryolabsSolarPowerPredictor:
 
     def load_model(
         self, 
-        model_file: str = v2_config.MODEL_NAME,
+        model_name: str = v2_config.MODEL_NAME,
         repo_id: str = v2_config.REPO_ID,
         file_path: str = v2_config.FILE_PATH
     ) -> XGBRegressor:
@@ -90,7 +90,7 @@ class TryolabsSolarPowerPredictor:
         zip_path = hf_hub_download(repo_id=repo_id, filename=file_path, local_dir=self.download_dir)
 
         # Decompress model file if it wasn't done yet
-        model_path = os.path.join(self.download_dir, model_filename)
+        model_path = os.path.join(self.download_dir, model_name)
         if not os.path.isfile(model_path):
             self._decompress_zipfile(zip_path)
 
