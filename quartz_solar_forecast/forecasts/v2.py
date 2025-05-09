@@ -37,7 +37,7 @@ class TryolabsSolarPowerPredictor:
         Predicts solar power output for the given parameters.
     """
     DATE_COLUMN = "date"
-    download_dir = os.path.dirname(quartz_solar_forecast.__file__) + "/models"
+    download_dir = os.path.dirname(quartz_solar_forecast.__file__) + "/models/v1"
     
     def _decompress_zipfile(self, filename: str) -> None:
         """
