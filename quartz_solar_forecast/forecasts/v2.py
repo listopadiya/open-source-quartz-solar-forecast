@@ -10,7 +10,7 @@ from quartz_solar_forecast.weather import WeatherService
 
 from xgboost.sklearn import XGBRegressor
 
-from . import constants
+from . import v2_config
 import quartz_solar_forecast
 
 logger = logging.getLogger(__name__)
@@ -39,91 +39,79 @@ class TryolabsSolarPowerPredictor:
     DATE_COLUMN = "date"
     download_dir = os.path.dirname(quartz_solar_forecast.__file__) + "/models"
 
-    def _download_model(self, filename: str, repo_id: str, file_path: str) -> str:
+    def _download_zipfile(self, repo_id: str, filename: str) -> str:
         """
-        Downloads a model file from a Hugging Face repository and saves it locally.
-    
+        Downloads a compressed model file from Hugging Face repository to the cache directory.
         Parameters:
         -----------
-        filename : str
-            The name to give the downloaded file when saving it locally.
         repo_id : str
             The ID of the Hugging Face repository containing the model.
-        file_path : str
+        filename : str
             The path to the model file within the repository.
     
         Returns:
         --------
         str
-            The path to the locally saved model file.
+            The path to the locally saved compressed model file.
         """
         # Use the project directory instead of the user's home directory
         os.makedirs(self.download_dir, exist_ok=True)
-        
-        downloaded_file = hf_hub_download(repo_id=repo_id, filename=file_path, cache_dir=self.download_dir)
-        
-        target_path = os.path.join(self.download_dir, filename)
 
-        # copy file from downloaded_file to target_path
-        shutil.copyfile(downloaded_file, target_path)
-        
-        return target_path
-
+        return hf_hub_download(repo_id=repo_id, filename=file_path, local_dir=self.download_dir)
+    
     def _decompress_zipfile(self, filename: str) -> None:
         """
-        Extract all files contained in a .zip file to the current directory.
-        filename must contain .zip extension
+        Extracts the contents of a zip file to a given directory.
+        Skips if already extracted.
 
-        Parameters
+        Parameters:
         ----------
         filename : str
-            The name of the .zip file to be decompressed
+            The name of the .zip file to be decompressed.
         """
-        # get the directory of the file
+        # Get the directory of the file
         directory = os.path.dirname(filename)
 
+        logger.info(f"Decompressing {filename} to {directory}")
         with zipfile.ZipFile(filename, "r") as zip_file:
             zip_file.extractall(path=directory)
 
     def load_model(
         self, 
-        model_file: str = constants.MODEL_FILE,
-        repo_id: str = "openclimatefix/open-source-quartz-solar-forecast",
-        file_path: str = "models/v2/model_10_202405.ubj.zip"
+        model_file: str = v2_config.MODEL_NAME,
+        repo_id: str = v2_config.REPO_ID,
+        file_path: str = v2_config.FILE_PATH
     ) -> XGBRegressor:
         """
         Downloads, prepares, and loads the XGBoost model for solar power prediction.
     
         Parameters:
         -----------
-        model_file : str, optional
+        model_name : str, optional
             The name of the model file (without .zip extension).
-            Default is set by constants.MODEL_FILE.
+            Default is set in v2_config.MODEL_NAME.
         repo_id : str, optional
             The ID of the Hugging Face repository containing the model.
-            Default is "openclimatefix/open-source-quartz-solar-forecast".
+            Default is set in v2_config.REPO_ID.
         file_path : str, optional
             The path to the model file within the repository.
-            Default is "models/v2/model_10_202405.ubj.zip".
+            Default is set in v2_config.FILE_PATH.
     
         Returns:
         --------
         XGBRegressor
             The loaded XGBoost model ready for making predictions.
         """
-        # Use the project directory
-        zipfile_model = os.path.join(self.download_dir, model_file + ".zip")
-    
-        if not os.path.isfile(zipfile_model):
-            logger.info("Downloading model...")
-            zipfile_model = self._download_model(model_file + ".zip", repo_id, file_path)
-        
-        model_path = os.path.join(self.download_dir, model_file)
-        if not os.path.isfile(model_path):
-            logger.info("Preparing model...")
-            self._decompress_zipfile(zipfile_model)
+        # No need to check if model is downloaded already,
+        # as hf_hub_download does its own caching
+        logger.info("Downloading model...")
+        zip_path = self._download_zipfile(repo_id, file_path)
 
-        logger.info("Loading model...")
+        model_path = os.path.join(self.download_dir, model_filename)
+        if not os.path.isfile(model_path):
+            self._decompress_zipfile(zip_path)
+
+        logger.info(f"Loading model from {model_path}")
         loaded_model = XGBRegressor()
         loaded_model.load_model(model_path)
         self.model = loaded_model
