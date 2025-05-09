@@ -38,31 +38,10 @@ class TryolabsSolarPowerPredictor:
     """
     DATE_COLUMN = "date"
     download_dir = os.path.dirname(quartz_solar_forecast.__file__) + "/models"
-
-    def _download_zipfile(self, repo_id: str, filename: str) -> str:
-        """
-        Downloads a compressed model file from Hugging Face repository to the cache directory.
-        Parameters:
-        -----------
-        repo_id : str
-            The ID of the Hugging Face repository containing the model.
-        filename : str
-            The path to the model file within the repository.
-    
-        Returns:
-        --------
-        str
-            The path to the locally saved compressed model file.
-        """
-        # Use the project directory instead of the user's home directory
-        os.makedirs(self.download_dir, exist_ok=True)
-
-        return hf_hub_download(repo_id=repo_id, filename=file_path, local_dir=self.download_dir)
     
     def _decompress_zipfile(self, filename: str) -> None:
         """
         Extracts the contents of a zip file to a given directory.
-        Skips if already extracted.
 
         Parameters:
         ----------
@@ -101,12 +80,16 @@ class TryolabsSolarPowerPredictor:
         --------
         XGBRegressor
             The loaded XGBoost model ready for making predictions.
-        """
+        """        
+        # Use the project directory instead of the user's home directory
+        os.makedirs(self.download_dir, exist_ok=True)
+
         # No need to check if model is downloaded already,
         # as hf_hub_download does its own caching
         logger.info("Downloading model...")
-        zip_path = self._download_zipfile(repo_id, file_path)
+        zip_path = hf_hub_download(repo_id=repo_id, filename=file_path, local_dir=self.download_dir)
 
+        # Decompress model file if it wasn't done yet
         model_path = os.path.join(self.download_dir, model_filename)
         if not os.path.isfile(model_path):
             self._decompress_zipfile(zip_path)
