@@ -12,18 +12,18 @@ def site():
     return PVSite(latitude=51.75, longitude=-1.25, capacity_kwp=1.25)
 
 
-def test_run_forecast_invalid_model(site):
-    with pytest.raises(ValueError, match="Unsupported model:"):
-        run_forecast(site=site, model="invalid_model")
-
-
 def test_run_forecast(site):
+    print("test1")
     ts = datetime.today() - timedelta(weeks=2)
 
     # run model with icon, gfs and ukmo nwp
+    print("test1")
     predications_df_gfs = predict_ocf(site=site, model=None, ts=ts, nwp_source="gfs")
+    print("test1")
     predications_df_icon = predict_ocf(site=site, model=None, ts=ts, nwp_source="icon")
+    print("test1")
     predications_df_ukmo = predict_ocf(site=site, model=None, ts=ts, nwp_source="ukmo")
+    print("test1")
     predications_df_xgb = predict_tryolabs(site=site, ts=ts)
 
     print("\n Prediction based on GFS NWP\n")
@@ -81,3 +81,10 @@ def test_large_capacity(site):
     assert np.round(predications_df["power_kw"].sum() * 1000, 8) == np.round(
         predications_df_large["power_kw"].sum(), 8
     )
+
+
+def test_run_forecast_invalid_model(site):
+    with pytest.raises(ValueError, match="Unsupported model:"):
+        run_forecast(site=site, model="invalid_model")
+
+
