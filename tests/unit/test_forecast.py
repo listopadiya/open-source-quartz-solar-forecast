@@ -21,9 +21,9 @@ def test_run_forecast(site):
     ts = datetime.today() - timedelta(weeks=2)
 
     # run model with icon, gfs and ukmo nwp
-    predications_df_gfs = predict_ocf(site=site, model="gb", ts=ts, nwp_source="gfs")
-    predications_df_icon = predict_ocf(site=site, model="gb", ts=ts, nwp_source="icon")
-    predications_df_ukmo = predict_ocf(site=site, model="gb", ts=ts, nwp_source="ukmo")
+    predications_df_gfs = predict_ocf(site=site, model=None, ts=ts, nwp_source="gfs")
+    predications_df_icon = predict_ocf(site=site, model=None, ts=ts, nwp_source="icon")
+    predications_df_ukmo = predict_ocf(site=site, model=None, ts=ts, nwp_source="ukmo")
     predications_df_xgb = predict_tryolabs(site=site, ts=ts)
 
     print("\n Prediction based on GFS NWP\n")
@@ -47,10 +47,10 @@ def test_run_forecast_historical(site):
     ts = datetime.today() - timedelta(days=200)
 
     # run model with icon, gfs and ukmo nwp
-    predications_df_gfs = predict_ocf(site=site, ts=ts, model="gb", nwp_source="gfs")
-    predications_df_icon = predict_ocf(site=site, ts=ts, model="gb", nwp_source="icon")
-    predications_df_ukmo = predict_ocf(site=site, ts=ts, model="gb", nwp_source="ukmo")
-    predications_df_xgb = predict_tryolabs(site=site, ts=ts, model="xgb")
+    predications_df_gfs = predict_ocf(site=site, ts=ts, model=None, nwp_source="gfs")
+    predications_df_icon = predict_ocf(site=site, ts=ts, model=None, nwp_source="icon")
+    predications_df_ukmo = predict_ocf(site=site, ts=ts, model=None, nwp_source="ukmo")
+    predications_df_xgb = predict_tryolabs(site=site, ts=ts)
 
     print("\nPrediction for a date more than 180 days in the past")
 
@@ -75,8 +75,8 @@ def test_large_capacity(site):
     ts = datetime.today() - timedelta(weeks=2)
 
     # run model with icon, gfs and ukmo nwp
-    predications_df = predict_ocf(site=site, model="gb", ts=ts, nwp_source="gfs")
-    predications_df_large = predict_ocf(site=site_large, model="gb", ts=ts, nwp_source="gfs")
+    predications_df = predict_ocf(site=site, model=None, ts=ts, nwp_source="gfs")
+    predications_df_large = predict_ocf(site=site_large, model=None, ts=ts, nwp_source="gfs")
 
     assert np.round(predications_df["power_kw"].sum() * 1000, 8) == np.round(
         predications_df_large["power_kw"].sum(), 8
