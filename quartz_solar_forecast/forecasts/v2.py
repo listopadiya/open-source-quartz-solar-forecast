@@ -4,6 +4,7 @@ import zipfile
 import os.path
 import shutil
 import logging
+import sys
 
 from huggingface_hub import hf_hub_download
 from quartz_solar_forecast.weather import WeatherService
