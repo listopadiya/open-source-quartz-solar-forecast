@@ -4,7 +4,6 @@ import zipfile
 import os.path
 import shutil
 import logging
-import sys
 
 from huggingface_hub import hf_hub_download
 from quartz_solar_forecast.weather import WeatherService
@@ -14,7 +13,6 @@ from xgboost.sklearn import XGBRegressor
 from . import v2_config
 import quartz_solar_forecast
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TryolabsSolarPowerPredictor:
@@ -99,7 +97,6 @@ class TryolabsSolarPowerPredictor:
         loaded_model = XGBRegressor()
         loaded_model.load_model(model_path)
         self.model = loaded_model
-        logger.info("XGBR loaded");
         return loaded_model
         
     def get_data(
@@ -229,14 +226,10 @@ class TryolabsSolarPowerPredictor:
             DataFrame containing timestamps and predicted power output in kW for every 15 minutes.
         """
 
-        logger.info("Get data")
         data = self.get_data(latitude, longitude, start_date, kwp, orientation, tilt)
         #if data is not None:
-        logger.info("Clean data")
         cleaned_data = self.clean(data)
-        logger.info("Now really predict")
         predictions = self.model.predict(cleaned_data.drop(columns=[self.DATE_COLUMN]))
-        logger.info("Done")
         predictions_df = pd.DataFrame(predictions, columns=["prediction"])
         final_data = cleaned_data.join(predictions_df)
         # set night predictions to 0
