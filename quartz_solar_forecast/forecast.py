@@ -61,8 +61,10 @@ def predict_tryolabs(
     :param ts: the timestamp of the site. If None, defaults to the current timestamp rounded down to 15 minutes.
     :return: The PV forecast of the site for time (ts) for 48 hours
     """
+
     # instantiate class to make predictions
     solar_power_predictor = TryolabsSolarPowerPredictor()
+
     # set start and end time, if no time is given use current time
     if ts is None:
         start_date = pd.Timestamp.now().strftime("%Y-%m-%d")
@@ -84,10 +86,8 @@ def predict_tryolabs(
         )
     else:
         # download the model from google drive and decompress if necessary
-
         solar_power_predictor.load_model()
         # make predictions
-
         predictions = solar_power_predictor.predict_power_output(
             latitude=site.latitude,
             longitude=site.longitude,
