@@ -88,6 +88,7 @@ def predict_tryolabs(
         # download the model from google drive and decompress if necessary
         solar_power_predictor.load_model()
         # make predictions
+        print("Predictions started.")
         predictions = solar_power_predictor.predict_power_output(
             latitude=site.latitude,
             longitude=site.longitude,
