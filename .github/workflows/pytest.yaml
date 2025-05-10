@@ -19,7 +19,6 @@ jobs:
       python-version: "['3.11']"
       extra_commands: |
         echo "HF_TOKEN=${{ vars.HF_TOKEN }}" > .env
-        pytest -o log_cli=true -o log_cli_level=INFO
       pytest_numcpus: '1'
       test_dir: tests/unit
 
