@@ -85,10 +85,9 @@ class TryolabsSolarPowerPredictor:
         """        
         # Use the project directory instead of the user's home directory
         os.makedirs(self.download_dir, exist_ok=True)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         # No need to check if model is downloaded already,
         # as hf_hub_download does its own caching
-        logger.info("Downloading model...")
+        logger.info(f"Downloading model to {self.download_dir}")
         zip_path = hf_hub_download(repo_id=repo_id, filename=file_path, local_dir=self.download_dir)
 
         # Decompress model file if it wasn't done yet
@@ -100,6 +99,7 @@ class TryolabsSolarPowerPredictor:
         loaded_model = XGBRegressor()
         loaded_model.load_model(model_path)
         self.model = loaded_model
+        logger.info("XGBR loaded");
         return loaded_model
         
     def get_data(
