@@ -64,7 +64,7 @@ def predict_tryolabs(
 
     # instantiate class to make predictions
     solar_power_predictor = TryolabsSolarPowerPredictor()
-
+    
     # set start and end time, if no time is given use current time
     if ts is None:
         start_date = pd.Timestamp.now().strftime("%Y-%m-%d")
