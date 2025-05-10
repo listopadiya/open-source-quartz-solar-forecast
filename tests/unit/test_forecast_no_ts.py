@@ -15,6 +15,7 @@ def site():
 def current_ts():
     return pd.Timestamp.now()
 
+
 # Run gradient boosting model with no ts
 def test_predict_ocf_no_ts(site, current_ts):
     predictions_df = predict_ocf(site=site, model=None, ts=current_ts, nwp_source="icon")
@@ -25,6 +26,7 @@ def test_predict_ocf_no_ts(site, current_ts):
     print(predictions_df)
     print(f"Current time: {current_ts}")
     print(f"Max: {predictions_df['power_kw'].max()}")
+
 
 # Run xgb model with no ts
 def test_predict_tryolabs_no_ts(site, current_ts):    
