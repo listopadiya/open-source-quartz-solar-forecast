@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import logging
-import sys
 
 import pandas as pd
 
@@ -9,7 +8,6 @@ from quartz_solar_forecast.forecasts import forecast_v1_tilt_orientation, Tryola
 from quartz_solar_forecast.pydantic_models import PVSite
 from quartz_solar_forecast.utils.sentry_logging import write_sentry
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 log = logging.getLogger(__name__)
 
 def predict_ocf(
@@ -88,10 +86,10 @@ def predict_tryolabs(
         )
     else:
         # download the model from google drive and decompress if necessary
-        log.info("Download model.")
+
         solar_power_predictor.load_model()
         # make predictions
-        log.info("Predictions started.")
+
         predictions = solar_power_predictor.predict_power_output(
             latitude=site.latitude,
             longitude=site.longitude,
@@ -100,7 +98,7 @@ def predict_tryolabs(
             orientation=site.orientation,
             tilt=site.tilt,
         )
-        log.info("Predictions done")
+
         # postprocessing of the dataframe
         predictions = predictions[
             (predictions["date"] >= start_time) & (predictions["date"] < end_time)
