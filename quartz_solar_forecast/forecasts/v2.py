@@ -13,7 +13,7 @@ from xgboost.sklearn import XGBRegressor
 from . import v2_config
 import quartz_solar_forecast
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TryolabsSolarPowerPredictor:
