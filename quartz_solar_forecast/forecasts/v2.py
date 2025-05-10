@@ -37,7 +37,7 @@ class TryolabsSolarPowerPredictor:
         Predicts solar power output for the given parameters.
     """
     DATE_COLUMN = "date"
-    download_dir = os.path.dirname(quartz_solar_forecast.__file__) + "/models/v2"
+    download_dir = os.path.dirname(quartz_solar_forecast.__file__)
     
     def _decompress_zipfile(self, filename: str) -> None:
         """
@@ -90,7 +90,7 @@ class TryolabsSolarPowerPredictor:
         zip_path = hf_hub_download(repo_id=repo_id, filename=file_path, local_dir=self.download_dir)
 
         # Decompress model file if it wasn't done yet
-        model_path = os.path.join(self.download_dir, model_name)
+        model_path = os.path.join(self.download_dir, "models/v2", model_name)
         if not os.path.isfile(model_path):
             self._decompress_zipfile(zip_path)
 
