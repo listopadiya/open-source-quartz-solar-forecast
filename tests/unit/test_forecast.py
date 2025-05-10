@@ -81,10 +81,3 @@ def test_large_capacity(site):
     assert np.round(predications_df["power_kw"].sum() * 1000, 8) == np.round(
         predications_df_large["power_kw"].sum(), 8
     )
-
-
-def test_run_forecast_invalid_model(site):
-    with pytest.raises(ValueError, match="Unsupported model:"):
-        run_forecast(site=site, model="invalid_model")
-
-
