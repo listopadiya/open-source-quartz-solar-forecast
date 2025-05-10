@@ -33,9 +33,9 @@ def test_run_forecast(site):
     print(predications_df_ukmo)
     print(f" Max: {predications_df_ukmo['power_kw'].max()}")
 
-    print("\n Prediction based on XGB\n")
-    print(predications_df_xgb)
-    print(f" Max: {predications_df_xgb['power_kw'].max()}")
+    # print("\n Prediction based on XGB\n")
+    # print(predications_df_xgb)
+    # print(f" Max: {predications_df_xgb['power_kw'].max()}")
 
 
 def test_run_forecast_historical(site):
@@ -65,7 +65,8 @@ def test_run_forecast_historical(site):
     print(predications_df_xgb)
 
 
-def test_large_capacity(site):
+def test_large_capacity():
+    site = PVSite(latitude=51.75, longitude=-1.25, capacity_kwp=4)
     site_large = PVSite(latitude=51.75, longitude=-1.25, capacity_kwp=4000)
     ts = datetime.today() - timedelta(weeks=2)
 
