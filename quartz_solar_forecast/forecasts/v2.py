@@ -85,7 +85,7 @@ class TryolabsSolarPowerPredictor:
         """        
         # Use the project directory instead of the user's home directory
         os.makedirs(self.download_dir, exist_ok=True)
-
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         # No need to check if model is downloaded already,
         # as hf_hub_download does its own caching
         logger.info("Downloading model...")
