@@ -13,15 +13,16 @@ jobs:
   call-run-python-tests-unit:
     uses: listopadiya/.github/.github/workflows/python-test.yml@main
     with:
-      cache-key: hf-model-cache-${{ hashFiles('quartz_solar_forecast/forecasts/v2_config.py') }}
+      cache-prefix: "hf-model-cache-"
+      cache-config-path: quartz_solar_forecast/forecasts/v2_config.py
       cache-path: quartz_solar_forecast/models/v2
       # pytest-cov looks at this folder
       pytest_cov_dir: "quartz_solar_forecast"
+      pytest_numcpus: '1'
       os_list: '["ubuntu-latest"]'
       python-version: "['3.11']"
       extra_commands: |
         echo "HF_TOKEN=${{ vars.HF_TOKEN }}" > .env
-      pytest_numcpus: '1'
       test_dir: tests/unit
 
   call-run-python-tests-all:
@@ -29,12 +30,13 @@ jobs:
     uses: listopadiya/.github/.github/workflows/python-test.yml@main
     if: github.event_name == 'push'
     with:
-      cache-key: hf-model-cache-${{ hashFiles('quartz_solar_forecast/forecasts/v2_config.py') }}
+      cache-prefix: "hf-model-cache-"
+      cache-config-path: quartz_solar_forecast/forecasts/v2_config.py
       cache-path: quartz_solar_forecast/models/v2
       # pytest-cov looks at this folder
       pytest_cov_dir: "quartz_solar_forecast"
+      pytest_numcpus: '1'
       os_list: '["ubuntu-latest"]'
       python-version: "['3.11']"
       extra_commands: echo "HF_TOKEN=${{ vars.HF_TOKEN }}" > .env
-      pytest_numcpus: '1'
       test_dir: tests
