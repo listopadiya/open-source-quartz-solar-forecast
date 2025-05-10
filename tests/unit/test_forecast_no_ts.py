@@ -1,16 +1,24 @@
 import pandas as pd
-from quartz_solar_forecast.forecast import run_forecast
+import pytest
+
+from quartz_solar_forecast.forecast import predict_ocf, predict_tryolabs
 from quartz_solar_forecast.pydantic_models import PVSite
 
 
-def test_run_forecast_no_ts():
-    # make input data
-    site = PVSite(latitude=51.75, longitude=-1.25, capacity_kwp=1.25)
+# Shared fixture for site input
+@pytest.fixture
+def site():
+    return PVSite(latitude=51.75, longitude=-1.25, capacity_kwp=1.25)
 
-    current_ts = pd.Timestamp.now()
+# Shared fixture for time input
+@pytest.fixture
+def current_ts():
+    return pd.Timestamp.now()
 
-    # run gradient boosting model with no ts
-    predictions_df = run_forecast(site=site, model="gb")
+# Run gradient boosting model with no ts
+def test_predict_ocf_no_ts(site, current_ts):
+    predictions_df = predict_ocf(site=site, model=None, ts=current_ts, nwp_source="icon")
+
     # check current ts agrees with dataset
     assert predictions_df.index.min() >= current_ts - pd.Timedelta(hours=1)
 
@@ -18,8 +26,10 @@ def test_run_forecast_no_ts():
     print(f"Current time: {current_ts}")
     print(f"Max: {predictions_df['power_kw'].max()}")
 
-    # run xgb model with no ts
-    predictions_df = run_forecast(site=site, model="xgb")
+# Run xgb model with no ts
+def test_predict_tryolabs_no_ts(site, current_ts):    
+    predictions_df = predict_tryolabs(site=site, ts=current_ts)
+
     # check current ts agrees with dataset
     assert predictions_df.index.min() >= current_ts - pd.Timedelta(hours=1)
 
