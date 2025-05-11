@@ -150,7 +150,8 @@ class WeatherService:
             "terrestrial_radiation",
         ]
         url = self._build_url(latitude, longitude, start_date, end_date, variables)
-
+        print("GET_HOURLY_WEATHER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print(url)
         cache_session = requests_cache.CachedSession(".cache", expire_after=-1)
         retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
         try:
