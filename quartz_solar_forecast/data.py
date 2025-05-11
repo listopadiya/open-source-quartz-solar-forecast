@@ -73,7 +73,7 @@ def get_nwp(site: PVSite, ts: datetime, nwp_source: str = "icon") -> xr.Dataset:
             longitude=site.longitude,
             start_date=f"{start}",
             end_date=f"{end}",
-            variables="visibility",
+            variables=["visibility"],
             api_type="gfs"
         )
         weather_data["vis"] = visibility_data["visibility"].values
