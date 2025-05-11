@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+from datetime import datetime, timedelta
 
 from quartz_solar_forecast.forecast import predict_ocf, predict_tryolabs
 from quartz_solar_forecast.weather.open_meteo import WeatherService
