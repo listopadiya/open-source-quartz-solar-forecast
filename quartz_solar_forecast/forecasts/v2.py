@@ -136,11 +136,11 @@ class TryolabsSolarPowerPredictor:
         end_date = end_date_datetime.strftime("%Y-%m-%d")
 
         weather_service = WeatherService()
-
+        logger.info("Call get_hourly_weather)
         weather_data = weather_service.get_hourly_weather(
             latitude, longitude, start_date, end_date
         )
-
+        
         PANEL_COLUMNS = [
             "latitude_rounded",
             "longitude_rounded",
@@ -225,9 +225,10 @@ class TryolabsSolarPowerPredictor:
         pd.DataFrame
             DataFrame containing timestamps and predicted power output in kW for every 15 minutes.
         """
-
+        logger.info("Call get_data")
         data = self.get_data(latitude, longitude, start_date, kwp, orientation, tilt)
         #if data is not None:
+        logger.info("Call clean")
         cleaned_data = self.clean(data)
         predictions = self.model.predict(cleaned_data.drop(columns=[self.DATE_COLUMN]))
         predictions_df = pd.DataFrame(predictions, columns=["prediction"])
