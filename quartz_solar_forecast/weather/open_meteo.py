@@ -63,7 +63,7 @@ class WeatherService:
             )
 
     def get_hourly_weather(
-        self, latitude: float, longitude: float, start_date: str, end_date: str, variables: List[str]
+        self, latitude: float, longitude: float, start_date: str, end_date: str, variables: List[str], api_type: str = "forecast"
     ) -> pd.DataFrame:
         """
         Get hourly weather data ranging from 3 months ago up to 15 days ahead (forecast).
@@ -80,6 +80,8 @@ class WeatherService:
             The end date for the weather data, in the format YYYY-MM-DD.
         variables : list
             A list of weather variables to include in the API response.
+        api_type : str
+            Type of Open-Meteo API to be used, forecast by default.
 
         Returns
         -------
@@ -94,7 +96,7 @@ class WeatherService:
         self._validate_coordinates(latitude, longitude)
         self._validate_date_format(start_date, end_date)
 
-        url = f"https://api.open-meteo.com/v1/forecast"
+        url = f"https://api.open-meteo.com/v1/{api_type}"
         params = {
             "latitude": latitude,
             "longitude": longitude,
