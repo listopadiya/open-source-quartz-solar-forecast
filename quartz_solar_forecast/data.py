@@ -84,6 +84,7 @@ def get_nwp(site: PVSite, ts: datetime, nwp_source: str = "icon") -> xr.Dataset:
     # Rename variable columns for future needs
     weather_data.rename(columns=variable_map)
     weather_data.rename(columns={"date": "time"})
+    print(weather_data)
     weather_data.set_index("time").astype('float64')
 
     # Convert data into xarray
