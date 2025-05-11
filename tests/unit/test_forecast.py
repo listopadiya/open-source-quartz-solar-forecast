@@ -1,6 +1,6 @@
 from quartz_solar_forecast.forecast import predict_ocf, predict_tryolabs, run_forecast
 from quartz_solar_forecast.pydantic_models import PVSite
-from quartz_solar_forecast.tests.mocks import mock_weather_api
+from tests.unit.mocks import mock_weather_api
 
 from datetime import datetime, timedelta
 
