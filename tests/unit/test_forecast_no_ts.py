@@ -16,6 +16,7 @@ def site():
 def current_ts():
     return pd.Timestamp.now()
 
+# Fixture for getting hourly data from open-meteo
 @pytest.fixture
 def dummy_weatherservice(monkeypatch):
     # Monkeypatch get_hourly_weather method:
