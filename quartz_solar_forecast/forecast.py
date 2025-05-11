@@ -97,6 +97,7 @@ def predict_tryolabs(
             tilt=site.tilt,
         )
         print("Something predicted")
+        print(predictions)
         # postprocessing of the dataframe
         predictions = predictions[
             (predictions["date"] >= start_time) & (predictions["date"] < end_time)
