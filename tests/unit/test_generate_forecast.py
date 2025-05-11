@@ -38,7 +38,7 @@ def test_generate_forecast(monkeypatch):
         )
 
     monkeypatch.setattr(forecast, "run_forecast", mock_forecast)
-    print("test_generate_forecast)
+    print("test_generate_forecast")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
