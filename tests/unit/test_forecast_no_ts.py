@@ -18,7 +18,7 @@ def current_ts():
 
 
 # Run gradient boosting model with no ts
-def test_predict_ocf_no_ts(site, current_ts):
+def test_predict_ocf_no_ts(site, current_ts, mock_weather_api):
     predictions_df = predict_ocf(site=site, model=None, ts=current_ts, nwp_source="icon")
 
     # check current ts agrees with dataset
