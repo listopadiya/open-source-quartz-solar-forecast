@@ -21,7 +21,7 @@ def test_run_forecast(site, mock_weather_api):
     predications_df_gfs = predict_ocf(site=site, model=None, ts=ts, nwp_source="gfs")
     predications_df_icon = predict_ocf(site=site, model=None, ts=ts, nwp_source="icon")
     predications_df_ukmo = predict_ocf(site=site, model=None, ts=ts, nwp_source="ukmo")
-    # predications_df_xgb = predict_tryolabs(site=site, ts=ts)
+    predications_df_xgb = predict_tryolabs(site=site, ts=ts)
 
     print("\n Prediction based on GFS NWP\n")
     print(predications_df_gfs)
