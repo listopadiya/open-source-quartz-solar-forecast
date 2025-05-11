@@ -136,11 +136,11 @@ class TryolabsSolarPowerPredictor:
         end_date = end_date_datetime.strftime("%Y-%m-%d")
 
         weather_service = WeatherService()
-        logger.info("Call get_hourly_weather)
+        logger.info("Call get_hourly_weather")
         weather_data = weather_service.get_hourly_weather(
             latitude, longitude, start_date, end_date
         )
-        
+        logger.info("Ready get_hourly_weather")
         PANEL_COLUMNS = [
             "latitude_rounded",
             "longitude_rounded",
