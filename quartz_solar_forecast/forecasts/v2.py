@@ -223,14 +223,10 @@ class TryolabsSolarPowerPredictor:
         pd.DataFrame
             DataFrame containing timestamps and predicted power output in kW for every 15 minutes.
         """
-        logger.info("Call get_data")
         data = self.get_data(latitude, longitude, start_date, kwp, orientation, tilt)
         #if data is not None:
-        logger.info("Call clean")
         cleaned_data = self.clean(data)
-        logger.info("Predict")
         predictions = self.model.predict(cleaned_data.drop(columns=[self.DATE_COLUMN]))
-        logger.info("Ready")
         predictions_df = pd.DataFrame(predictions, columns=["prediction"])
         final_data = cleaned_data.join(predictions_df)
         # set night predictions to 0
