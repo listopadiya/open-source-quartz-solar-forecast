@@ -1,6 +1,5 @@
 import pandas as pd
 import pytest
-from datetime import datetime, timedelta
 
 from quartz_solar_forecast.forecast import predict_ocf, predict_tryolabs
 from quartz_solar_forecast.weather.open_meteo import WeatherService
@@ -19,37 +18,37 @@ def current_ts():
 
 @pytest.fixture
 def dummy_weatherservice(monkeypatch):
-    # Monkeypatch the WeatherService method
+    # Monkeypatch get_hourly_weather method
     def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date):
         print(f"MOCK IS CALLED {latitude} {longitude} {start_date} {end_date}")
-        mock_hourly_data = {
-            "date": pd.date_range(
-                start=pd.to_datetime(hourly.Time(), unit="s", utc=False),
-                end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=False),
-                freq=pd.Timedelta(seconds=hourly.Interval()),
-                inclusive="left"
-            ),
-            "temperature_2m": hourly.Variables(0).ValuesAsNumpy(),
-            "relative_humidity_2m": hourly.Variables(0).ValuesAsNumpy(),
-            "dew_point_2m": hourly.Variables(0).ValuesAsNumpy(),
-            "precipitation": hourly.Variables(0).ValuesAsNumpy(),
-            "surface_pressure": hourly.Variables(0).ValuesAsNumpy(),
-            "cloud_cover": hourly.Variables(0).ValuesAsNumpy(),
-            "cloud_cover_low": hourly.Variables(0).ValuesAsNumpy(),
-            "cloud_cover_mid": hourly.Variables(0).ValuesAsNumpy(),
-            "cloud_cover_high": hourly.Variables(0).ValuesAsNumpy(),
-            "wind_speed_10m": hourly.Variables(0).ValuesAsNumpy(),
-            "wind_direction_10m": hourly.Variables(0).ValuesAsNumpy(),
-            "is_day": hourly.Variables(0).ValuesAsNumpy(),
-            "shortwave_radiation": hourly.Variables(0).ValuesAsNumpy(),
-            "direct_radiation": hourly.Variables(0).ValuesAsNumpy(),
-            "diffuse_radiation": hourly.Variables(0).ValuesAsNumpy(),
-            "direct_normal_irradiance": hourly.Variables(0).ValuesAsNumpy(),
-            "terrestrial_radiation": hourly.Variables(0).ValuesAsNumpy(),
-        }
-
-        mock_weather_df = pd.DataFrame(mock_hourly_data)
-        mock_weather_df["date"] = pd.to_datetime(df["date"])
+        variables = [
+            "temperature_2m",
+            "relative_humidity_2m",
+            "dew_point_2m",
+            "precipitation",
+            "surface_pressure",
+            "cloud_cover",
+            "cloud_cover_low",
+            "cloud_cover_mid",
+            "cloud_cover_high",
+            "wind_speed_10m",
+            "wind_direction_10m",
+            "is_day",
+            "shortwave_radiation",
+            "direct_radiation",
+            "diffuse_radiation",
+            "direct_normal_irradiance",
+            "terrestrial_radiation",
+        ]
+        mock_hourly_date = pd.date_range(
+        	start = pd.to_datetime(start_date, format="%Y-%m-%d", utc = True),
+        	end = pd.to_datetime(end_date, format="%Y-%m-%d", utc = True) + pd.Timedelta(days=1),
+        	freq = pd.Timedelta(hours=1),
+        	inclusive = "left"
+        )
+        mock_weather_df = pd.DataFrame({ "date": mock_hourly_date })
+        for v in variables:
+            mock_weather_df[v] = 0.0
         return mock_weather_df
 
     monkeypatch.setattr(WeatherService, "get_hourly_weather", mock_get_hourly_weather)
