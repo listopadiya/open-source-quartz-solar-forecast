@@ -18,7 +18,8 @@ def current_ts():
 
 @pytest.fixture
 def dummy_weatherservice(monkeypatch):
-    # Monkeypatch get_hourly_weather method
+    # Monkeypatch get_hourly_weather method:
+    # behavior same to original method, returns dummy weather data
     def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date):
         variables = [
             "temperature_2m",
@@ -46,6 +47,7 @@ def dummy_weatherservice(monkeypatch):
         	inclusive = "left"
         )
         mock_weather_df = pd.DataFrame({ "date": mock_hourly_date })
+        # Fill with zeroes (fake weather data)
         for v in variables:
             mock_weather_df[v] = 0.0
         return mock_weather_df
@@ -68,7 +70,7 @@ def test_predict_ocf_no_ts(site, current_ts):
 # Run xgb model with no ts
 def test_predict_tryolabs_no_ts(site, current_ts, dummy_weatherservice):    
     predictions_df = predict_tryolabs(site=site, ts=current_ts)
-    print(predictions_df)
+
     # check current ts agrees with dataset
     assert predictions_df.index.min() >= current_ts - pd.Timedelta(hours=1)
 
