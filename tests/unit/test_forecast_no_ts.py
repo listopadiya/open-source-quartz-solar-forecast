@@ -2,8 +2,8 @@ import pandas as pd
 import pytest
 
 from quartz_solar_forecast.forecast import predict_ocf, predict_tryolabs
-from quartz_solar_forecast.weather.open_meteo import WeatherService
 from quartz_solar_forecast.pydantic_models import PVSite
+from quartz_solar_forecast.tests.mocks import mock_weather_api
 
 
 # Shared fixture for site input
@@ -15,26 +15,6 @@ def site():
 @pytest.fixture
 def current_ts():
     return pd.Timestamp.now()
-
-# Fixture for getting hourly data from open-meteo
-@pytest.fixture
-def dummy_weatherservice(monkeypatch):
-    # Monkeypatch get_hourly_weather method:
-    # behavior same to original method, returns dummy weather data
-    def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date, variables):
-        mock_hourly_date = pd.date_range(
-        	start = pd.to_datetime(start_date, format="%Y-%m-%d", utc = False),
-        	end = pd.to_datetime(end_date, format="%Y-%m-%d", utc = False) + pd.Timedelta(days=1),
-        	freq = pd.Timedelta(hours=1),
-        	inclusive = "left"
-        )
-        mock_weather_df = pd.DataFrame({ "date": mock_hourly_date })
-        # Fill with zeroes (fake weather data)
-        for v in variables:
-            mock_weather_df[v] = 0.0
-        return mock_weather_df
-
-    monkeypatch.setattr(WeatherService, "get_hourly_weather", mock_get_hourly_weather)
 
 
 # Run gradient boosting model with no ts
@@ -50,7 +30,7 @@ def test_predict_ocf_no_ts(site, current_ts):
 
 
 # Run xgb model with no ts
-def test_predict_tryolabs_no_ts(site, current_ts, dummy_weatherservice):    
+def test_predict_tryolabs_no_ts(site, current_ts, mock_weather_api):    
     predictions_df = predict_tryolabs(site=site, ts=current_ts)
 
     # check current ts agrees with dataset
