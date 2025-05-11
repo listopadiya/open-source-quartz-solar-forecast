@@ -20,26 +20,7 @@ def current_ts():
 def dummy_weatherservice(monkeypatch):
     # Monkeypatch get_hourly_weather method:
     # behavior same to original method, returns dummy weather data
-    def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date):
-        variables = [
-            "temperature_2m",
-            "relative_humidity_2m",
-            "dew_point_2m",
-            "precipitation",
-            "surface_pressure",
-            "cloud_cover",
-            "cloud_cover_low",
-            "cloud_cover_mid",
-            "cloud_cover_high",
-            "wind_speed_10m",
-            "wind_direction_10m",
-            "is_day",
-            "shortwave_radiation",
-            "direct_radiation",
-            "diffuse_radiation",
-            "direct_normal_irradiance",
-            "terrestrial_radiation",
-        ]
+    def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date, variables):
         mock_hourly_date = pd.date_range(
         	start = pd.to_datetime(start_date, format="%Y-%m-%d", utc = False),
         	end = pd.to_datetime(end_date, format="%Y-%m-%d", utc = False) + pd.Timedelta(days=1),
