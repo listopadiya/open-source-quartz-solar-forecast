@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import quartz_solar_forecast.forecast as forecast
 from quartz_solar_forecast.utils.forecast_csv import write_out_forecasts
 from quartz_solar_forecast.pydantic_models import PVSite
-from quartz_solar_forecast.tests.mocks import mock_weather_api
+from tests.unit.mocks import mock_weather_api
 
 def test_generate_forecast(monkeypatch, mock_weather_api):
     site_name = "TestCase"
