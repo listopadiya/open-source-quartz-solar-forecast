@@ -40,7 +40,7 @@ def test_run_forecast(site, mock_weather_api):
     # print(f" Max: {predications_df_xgb['power_kw'].max()}")
 
 
-def test_run_forecast_historical(site, dummy_weatherservice):
+def test_run_forecast_historical(site, mock_weather_api):
     ts = datetime.today() - timedelta(days=200)
 
     # run model with icon, gfs and ukmo nwp
@@ -67,7 +67,7 @@ def test_run_forecast_historical(site, dummy_weatherservice):
     print(predications_df_xgb)
 
 
-def test_large_capacity(dummy_weatherservice):
+def test_large_capacity(mock_weather_api):
     site = PVSite(latitude=51.75, longitude=-1.25, capacity_kwp=4)
     site_large = PVSite(latitude=51.75, longitude=-1.25, capacity_kwp=4000)
     ts = datetime.today() - timedelta(weeks=2)
