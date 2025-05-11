@@ -65,3 +65,15 @@ def test_predict_ocf_no_ts(site, current_ts):
     print(predictions_df)
     print(f"Current time: {current_ts}")
     print(f"Max: {predictions_df['power_kw'].max()}")
+
+
+# Run xgb model with no ts
+def test_predict_tryolabs_no_ts(site, current_ts, dummy_weatherservice):    
+    predictions_df = predict_tryolabs(site=site, ts=current_ts)
+
+    # check current ts agrees with dataset
+    assert predictions_df.index.min() >= current_ts - pd.Timedelta(hours=1)
+
+    print(predictions_df)
+    print(f"Current time: {current_ts}")
+    print(f"Max: {predictions_df['power_kw'].max()}")
