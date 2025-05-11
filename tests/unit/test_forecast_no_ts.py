@@ -63,7 +63,9 @@ def test_predict_ocf_no_ts(site, current_ts):
 
 # Run xgb model with no ts
 def test_predict_tryolabs_no_ts(site, current_ts, dummy_weatherservice):    
+    print("before prediction")
     predictions_df = predict_tryolabs(site=site, ts=current_ts)
+    print("after prediction")
 
     # check current ts agrees with dataset
     assert predictions_df.index.min() >= current_ts - pd.Timedelta(hours=1)
