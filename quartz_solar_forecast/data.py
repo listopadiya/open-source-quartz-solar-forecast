@@ -4,15 +4,11 @@ from datetime import datetime
 from typing import Optional
 
 import numpy as np
-import openmeteo_requests
 import pandas as pd
-import requests_cache
 import xarray as xr
-from retry_requests import retry
 
 from quartz_solar_forecast.pydantic_models import PVSite
-
-ssl._create_default_https_context = ssl._create_unverified_context
+from quartz_solar_forecast.weather import WeatherService
 
 
 def get_nwp(site: PVSite, ts: datetime, nwp_source: str = "icon") -> xr.Dataset:
@@ -25,11 +21,6 @@ def get_nwp(site: PVSite, ts: datetime, nwp_source: str = "icon") -> xr.Dataset:
     :return: nwp forecast in xarray
     """
     now = datetime.now()
-
-    # Setup the Open-Meteo API client with cache and retry on error
-    cache_session = requests_cache.CachedSession('.cache', expire_after = -1)
-    retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
-    openmeteo = openmeteo_requests.Client(session = retry_session)
 
     # Define the variables we want (and aliases). Visibility is handled separately after the main request
     variable_map = {
