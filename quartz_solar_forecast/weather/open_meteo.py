@@ -63,7 +63,7 @@ class WeatherService:
             )
 
     def get_hourly_weather(
-        self, latitude: float, longitude: float, start_date: str, end_date: str, variables: List[str], api_type: str = "forecast", models: str = None
+        self, latitude: float, longitude: float, start_date: str, end_date: str, variables: List[str], api_type: str = "forecast", model: str = None
     ) -> pd.DataFrame:
         """
         Get hourly weather data ranging from 3 months ago up to 15 days ahead (forecast).
