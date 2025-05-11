@@ -9,7 +9,7 @@ from quartz_solar_forecast.weather.open_meteo import WeatherService
 def mock_weather_api(monkeypatch):
     # Monkeypatch get_hourly_weather method:
     # behavior same to original method, returns dummy weather data
-    def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date, variables, api_type, model):
+    def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date, variables):
         mock_hourly_date = pd.date_range(
         	start = pd.to_datetime(start_date, format="%Y-%m-%d", utc = False),
         	end = pd.to_datetime(end_date, format="%Y-%m-%d", utc = False) + pd.Timedelta(days=1),
