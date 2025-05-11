@@ -99,12 +99,16 @@ def predict_tryolabs(
         print("Something predicted")
         print(predictions)
         # postprocessing of the dataframe
-        predictions = predictions[
-            (predictions["date"] >= start_time) & (predictions["date"] < end_time)
-        ]
-        predictions = predictions.reset_index(drop=True)
-        predictions.set_index("date", inplace=True)
-        print("Predictions finished.")
+        try:
+            predictions = predictions[
+                (predictions["date"] >= start_time) & (predictions["date"] < end_time)
+            ]
+            predictions = predictions.reset_index(drop=True)
+            predictions.set_index("date", inplace=True)
+            print("Predictions finished.")
+        except Exception as e:
+           # By this way we can know about the type of error occurring
+            print("The error is: ",e)
         return predictions
 
 
