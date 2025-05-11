@@ -101,7 +101,7 @@ class WeatherService:
             )
 
     def get_hourly_weather(
-        self, latitude: float, longitude: float, start_date: str, end_date: str
+        self, latitude: float, longitude: float, start_date: str, end_date: str, variables: List[str]
     ) -> pd.DataFrame:
         """
         Get hourly weather data ranging from 3 months ago up to 15 days ahead (forecast).
@@ -130,28 +130,8 @@ class WeatherService:
         self._validate_coordinates(latitude, longitude)
         self._validate_date_format(start_date, end_date)
 
-        variables = [
-            "temperature_2m",
-            "relative_humidity_2m",
-            "dew_point_2m",
-            "precipitation",
-            "surface_pressure",
-            "cloud_cover",
-            "cloud_cover_low",
-            "cloud_cover_mid",
-            "cloud_cover_high",
-            "wind_speed_10m",
-            "wind_direction_10m",
-            "is_day",
-            "shortwave_radiation",
-            "direct_radiation",
-            "diffuse_radiation",
-            "direct_normal_irradiance",
-            "terrestrial_radiation",
-        ]
         url = self._build_url(latitude, longitude, start_date, end_date, variables)
-        print("GET_HOURLY_WEATHER@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        print(url)
+
         cache_session = requests_cache.CachedSession(".cache", expire_after=-1)
         retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
         try:
@@ -161,7 +141,7 @@ class WeatherService:
             raise TimeoutError(f"Request to OpenMeteo API timed out. URl - {url}")
 
         hourly = response[0].Hourly()
-        hourly_data = {"time": pd.date_range(
+        hourly_data = {"date": pd.date_range(
             start=pd.to_datetime(hourly.Time(), unit="s", utc=False),
             end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=False),
             freq=pd.Timedelta(seconds=hourly.Interval()),
@@ -172,13 +152,5 @@ class WeatherService:
             hourly_data[variable] = hourly.Variables(i).ValuesAsNumpy()
 
         df = pd.DataFrame(hourly_data)
-        df["time"] = pd.to_datetime(df["time"])
-
-        # rename time column to date
-        df = df.rename(
-            columns={
-                "time": "date",
-            }
-        )
-
+        df["date"] = pd.to_datetime(df["date"])
         return df
