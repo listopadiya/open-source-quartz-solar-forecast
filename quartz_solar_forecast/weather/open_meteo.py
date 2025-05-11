@@ -98,7 +98,8 @@ class WeatherService:
         self._validate_coordinates(latitude, longitude)
         self._validate_date_format(start_date, end_date)
 
-        url = f"https://api.open-meteo.com/v1/{api_type}"
+        main_api = "archive-api" if api_type == "archive" else "api"
+        url = f"https://{main_api}.open-meteo.com/v1/{api_type}"
         params = {
             "latitude": latitude,
             "longitude": longitude,
