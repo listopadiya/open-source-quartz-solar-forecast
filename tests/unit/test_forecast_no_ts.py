@@ -20,7 +20,6 @@ def current_ts():
 def dummy_weatherservice(monkeypatch):
     # Monkeypatch get_hourly_weather method
     def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date):
-        print(f"MOCK IS CALLED {latitude} {longitude} {start_date} {end_date}")
         variables = [
             "temperature_2m",
             "relative_humidity_2m",
@@ -41,8 +40,8 @@ def dummy_weatherservice(monkeypatch):
             "terrestrial_radiation",
         ]
         mock_hourly_date = pd.date_range(
-        	start = pd.to_datetime(start_date, format="%Y-%m-%d", utc = True),
-        	end = pd.to_datetime(end_date, format="%Y-%m-%d", utc = True) + pd.Timedelta(days=1),
+        	start = pd.to_datetime(start_date, format="%Y-%m-%d", utc = False),
+        	end = pd.to_datetime(end_date, format="%Y-%m-%d", utc = False) + pd.Timedelta(days=1),
         	freq = pd.Timedelta(hours=1),
         	inclusive = "left"
         )
