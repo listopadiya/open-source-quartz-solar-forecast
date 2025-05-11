@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 
 from quartz_solar_forecast.forecast import predict_ocf, predict_tryolabs
-from quartz_solar_forecast.weather.openmeteo import WeatherService
+from quartz_solar_forecast.weather.open_meteo import WeatherService
 from quartz_solar_forecast.pydantic_models import PVSite
 
 
