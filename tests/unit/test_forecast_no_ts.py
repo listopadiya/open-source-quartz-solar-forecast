@@ -19,32 +19,37 @@ def current_ts():
 
 @pytest.fixture
 def dummy_weatherservice(monkeypatch):
-    start_time = datetime(2024, 6, 1, 0, 0)
-    hours = pd.date_range(start=start_time, periods=3, freq='H')    
-
     # Monkeypatch the WeatherService method
     def mock_get_hourly_weather(self, latitude, longitude, start_date, end_date):
         print(f"MOCK IS CALLED {latitude} {longitude} {start_date} {end_date}")
-        mock_weather_df = pd.DataFrame({
-            "date": hours,
-            "temperature_2m": [20.0, 21.5, 22.0],
-            "relative_humidity_2m": [50, 52, 55],
-            "dew_point_2m": [10, 11, 12],
-            "precipitation": [0, 0, 0],
-            "surface_pressure": [1010, 1011, 1012],
-            "cloud_cover": [30, 25, 20],
-            "cloud_cover_low": [10, 10, 5],
-            "cloud_cover_mid": [10, 10, 5],
-            "cloud_cover_high": [10, 5, 5],
-            "wind_speed_10m": [3.0, 3.5, 4.0],
-            "wind_direction_10m": [180, 190, 200],
-            "is_day": [1, 1, 1],
-            "shortwave_radiation": [500, 600, 700],
-            "direct_radiation": [300, 400, 450],
-            "diffuse_radiation": [200, 200, 250],
-            "direct_normal_irradiance": [600, 650, 700],
-            "terrestrial_radiation": [300, 310, 320],
-        })
+        mock_hourly_data = {
+            "date": pd.date_range(
+                start=pd.to_datetime(hourly.Time(), unit="s", utc=False),
+                end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=False),
+                freq=pd.Timedelta(seconds=hourly.Interval()),
+                inclusive="left"
+            ),
+            "temperature_2m": hourly.Variables(0).ValuesAsNumpy(),
+            "relative_humidity_2m": hourly.Variables(0).ValuesAsNumpy(),
+            "dew_point_2m": hourly.Variables(0).ValuesAsNumpy(),
+            "precipitation": hourly.Variables(0).ValuesAsNumpy(),
+            "surface_pressure": hourly.Variables(0).ValuesAsNumpy(),
+            "cloud_cover": hourly.Variables(0).ValuesAsNumpy(),
+            "cloud_cover_low": hourly.Variables(0).ValuesAsNumpy(),
+            "cloud_cover_mid": hourly.Variables(0).ValuesAsNumpy(),
+            "cloud_cover_high": hourly.Variables(0).ValuesAsNumpy(),
+            "wind_speed_10m": hourly.Variables(0).ValuesAsNumpy(),
+            "wind_direction_10m": hourly.Variables(0).ValuesAsNumpy(),
+            "is_day": hourly.Variables(0).ValuesAsNumpy(),
+            "shortwave_radiation": hourly.Variables(0).ValuesAsNumpy(),
+            "direct_radiation": hourly.Variables(0).ValuesAsNumpy(),
+            "diffuse_radiation": hourly.Variables(0).ValuesAsNumpy(),
+            "direct_normal_irradiance": hourly.Variables(0).ValuesAsNumpy(),
+            "terrestrial_radiation": hourly.Variables(0).ValuesAsNumpy(),
+        }
+
+        mock_weather_df = pd.DataFrame(mock_hourly_data)
+        mock_weather_df["date"] = pd.to_datetime(df["date"])
         return mock_weather_df
 
     monkeypatch.setattr(WeatherService, "get_hourly_weather", mock_get_hourly_weather)
@@ -64,9 +69,7 @@ def test_predict_ocf_no_ts(site, current_ts):
 
 # Run xgb model with no ts
 def test_predict_tryolabs_no_ts(site, current_ts, dummy_weatherservice):    
-    print("before prediction")
     predictions_df = predict_tryolabs(site=site, ts=current_ts)
-    print("after prediction")
 
     # check current ts agrees with dataset
     assert predictions_df.index.min() >= current_ts - pd.Timedelta(hours=1)
