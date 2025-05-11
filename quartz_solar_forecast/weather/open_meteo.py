@@ -63,7 +63,7 @@ class WeatherService:
             )
 
     def get_hourly_weather(
-        self, latitude: float, longitude: float, start_date: str, end_date: str, variables: List[str], api_type: str = "forecast"
+        self, latitude: float, longitude: float, start_date: str, end_date: str, variables: List[str], api_type: str = "forecast", models: str = None
     ) -> pd.DataFrame:
         """
         Get hourly weather data ranging from 3 months ago up to 15 days ahead (forecast).
@@ -82,6 +82,8 @@ class WeatherService:
             A list of weather variables to include in the API response.
         api_type : str
             Type of Open-Meteo API to be used, forecast by default.
+        model : str
+            Weather model, may be undefined
 
         Returns
         -------
@@ -103,9 +105,10 @@ class WeatherService:
             "start_date": start_date,
             "end_date": end_date,
             "hourly": variables,
-            "timezone": "GMT"
         }
-
+        if model is not None:
+            params["models"] = model
+        
         cache_session = requests_cache.CachedSession(".cache", expire_after=-1)
         retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
         try:
